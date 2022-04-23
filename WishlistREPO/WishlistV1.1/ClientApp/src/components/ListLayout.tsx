@@ -1,14 +1,15 @@
 import * as React from 'react';
 import { Container } from 'reactstrap';
 import NavMenu from './NavMenu';
-import List from './List'; 
+import List from './List/List'; 
+import ListItems from './ListItem/ListItems';
 
-export default class ListLayout extends React.PureComponent<{}, { selectedList: number }> {
+export default class ListLayout extends React.PureComponent<{}, any> {
 
     constructor(props: any) {
         super(props);
         this.state = {
-            selectedList: 0
+            selectedList: {}
         }
     }
 
@@ -17,21 +18,25 @@ export default class ListLayout extends React.PureComponent<{}, { selectedList: 
             selectList: this.selectList.bind(this)
         }
 
+        const ListItemProps = {
+            list: this.state.selectedList
+        }
+
         return (
             <div className="row">
                 <div className="col-4">
                     <List {...ListProps} />
                 </div>
                 <div className="col-8">
-                    {this.state.selectedList}
+                    <ListItems {...ListItemProps} />
                 </div>
             </div>
         );
     }
 
-    private selectList(id: number){
+    private selectList(list: any){
         this.setState({
-            selectedList: id
+            selectedList: list
         })
     }
 }

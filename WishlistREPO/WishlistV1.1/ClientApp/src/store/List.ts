@@ -39,7 +39,6 @@ interface ResponseInsertListAction {
 
 interface RequestUpdateListAction {
     type: 'REQUEST_UPDATE_LISTS';
-    id: number;
     list: List;
 }
 
@@ -80,6 +79,54 @@ export const actionCreators = {
 
             dispatch({ type: 'REQUEST_LISTS' });
         }
+    },
+
+    insertList: (list: List): AppThunkAction<KnownAction> => (dispatch, getState) => {
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(list)
+        };
+
+        fetch(`list`, requestOptions)
+            .then(response => response.json() as Promise<List[]>)
+            .then(data => {
+                dispatch({ type: 'RESPONSE_INSERT_LISTS', lists: data });
+            });
+        
+        dispatch({ type: 'REQUEST_INSERT_LISTS', list: list });
+    }, 
+
+    updateList: (list: List): AppThunkAction<KnownAction> => (dispatch, getState) => {
+        const requestOptions = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(list)
+        };
+
+        fetch(`list`, requestOptions)
+            .then(response => response.json() as Promise<List[]>)
+            .then(data => {
+                dispatch({ type: 'RESPONSE_UPDATE_LISTS', lists: data });
+            });
+        
+        dispatch({ type: 'REQUEST_UPDATE_LISTS', list: list });
+    },
+
+    deleteList: (id: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
+        const requestOptions = {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(id)
+        };
+
+        fetch(`list`, requestOptions)
+            .then(response => response.json() as Promise<List[]>)
+            .then(data => {
+                dispatch({ type: 'RESPONSE_DELETE_LISTS', lists: data });
+            });
+        
+        dispatch({ type: 'REQUEST_DELETE_LISTS', id: id });
     }
 };
 
@@ -101,13 +148,40 @@ export const reducer: Reducer<ListState> = (state: ListState | undefined, incomi
                 isLoading: true
             };
         case 'RECEIVE_LISTS':
-            // Only accept the incoming data if it matches the most recent request. This ensures we correctly
-            // handle out-of-order responses.
             return {
                 lists: action.lists,
                 isLoading: false
             };
-            break;
+        case 'REQUEST_INSERT_LISTS':
+            return {
+                lists: state.lists,
+                isLoading: true
+            };
+        case 'RESPONSE_INSERT_LISTS':
+            return {
+                lists: action.lists,
+                isLoading: false
+            };
+        case 'REQUEST_UPDATE_LISTS':
+            return {
+                lists: state.lists,
+                isLoading: true
+            };
+        case 'RESPONSE_UPDATE_LISTS':
+            return {
+                lists: action.lists,
+                isLoading: false
+            };
+        case 'REQUEST_DELETE_LISTS':
+            return {
+                lists: state.lists,
+                isLoading: true
+            };
+        case 'RESPONSE_DELETE_LISTS':
+            return {
+                lists: action.lists,
+                isLoading: false
+            };
     }
 
     return state;

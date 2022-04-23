@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using WishlistV1._1.Models;
+using WishlistV1._1.Services;
 
 namespace WishlistV1._1
 {
@@ -22,6 +25,16 @@ namespace WishlistV1._1
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddMvc()
+                .AddSessionStateTempDataProvider();
+            services.AddSession();
+
+            services.Configure<DatabaseSettings>(Configuration.GetSection(nameof(DatabaseSettings)));
+
+            services.AddSingleton<IDatabaseSettings>(sp => sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
+
+            services.AddSingleton<ListService>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -50,6 +63,8 @@ namespace WishlistV1._1
 
             app.UseRouting();
 
+            app.UseSession();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
@@ -66,6 +81,8 @@ namespace WishlistV1._1
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+
+
         }
     }
 }

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ApplicationState } from '../../store';
 import * as ListItemStore from '../../store/ListItem';
-import { Button, Input, InputGroup, InputGroupText, Label, ListGroup, ListGroupItem, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
+import { Button, Input, InputGroup, InputGroupText, Label, ListGroup, ListGroupItem, Modal, ModalBody, ModalFooter, ModalHeader, Media } from 'reactstrap';
 
 class ListItemModal extends React.PureComponent<any, any> {
     
@@ -13,6 +13,7 @@ class ListItemModal extends React.PureComponent<any, any> {
             item: {
                 name: '',
                 description: '',
+                image: null,
                 listId: ''
             }
         }
@@ -64,6 +65,18 @@ class ListItemModal extends React.PureComponent<any, any> {
                     { this.state.item.id ? 'Edit' : 'Add' } List Item
                 </ModalHeader>
                 <ModalBody>
+                    <Media object data-src={this.state.item.image} />
+                    <InputGroup>
+                        <InputGroupText>
+                            Image
+                        </InputGroupText>
+                        <Input
+                            type="file"
+                            name="image"
+                            value={this.state.item.image}
+                            onChange={(e) => this.handleChange(e)}
+                        />
+                    </InputGroup>
                     <InputGroup>
                         <InputGroupText>
                             Name
@@ -92,7 +105,7 @@ class ListItemModal extends React.PureComponent<any, any> {
                     {this.renderEraseButton()}
                     <Button 
                         color='primary' 
-                        disabled={ !this.state.item.name || !this.state.item.description || this.props.isLoading } 
+                        disabled={ !this.state.item.name || !this.state.item.description || !this.state.item.image || this.props.isLoading } 
                         onClick={() => this.saveList()}
                     >
                         Save

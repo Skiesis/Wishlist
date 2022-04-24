@@ -4,7 +4,7 @@ import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { ApplicationState } from '../../store';
 import * as ListItemStore from '../../store/ListItem';
-import { Card, CardBody, CardText, CardTitle, ListGroup, ListGroupItem } from 'reactstrap';
+import { Card, CardImg, CardBody, CardText, CardTitle, ListGroup, ListGroupItem } from 'reactstrap';
 import ListItemModal from './ListItemModal';
 
 class ListItems extends React.PureComponent<any, any> {
@@ -59,6 +59,7 @@ class ListItems extends React.PureComponent<any, any> {
                                 <Card 
                                     onClick={(e) => this.clickItem(e, item)}
                                 >
+                                    <CardImg top src={ item.image } />
                                     <CardBody>
                                         <CardTitle tag="h5">
                                             { item.name }
@@ -84,6 +85,7 @@ class ListItems extends React.PureComponent<any, any> {
             editItem: {
                 name: '',
                 description: '',
+                image: null,
                 listId: this.props.list.id
             },
         }, () => {

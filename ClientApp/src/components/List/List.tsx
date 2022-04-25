@@ -31,9 +31,8 @@ class List extends React.PureComponent<any, any> {
         return (
             <React.Fragment>
                 <div className='row'>
-                    <h1 className='col-6'> Wishlists </h1>
-                    <div className='col-6 align-items-center flex-row justify-content-center row'>
-                        <button className='btn btn-outline-info btn-sm rounded-pill' onClick={() => this.addList()}>+ Add</button>
+                    <div className='col-6 align-items-center flex-row justify-content-center row mb-4'>
+                        <button className='btn btn-outline-info btn-sm rounded-pill' onClick={() => this.addList()}>+ Add New List</button>
                     </div>
                 </div>
                 <div>

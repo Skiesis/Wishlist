@@ -43,7 +43,7 @@ class ListItems extends React.PureComponent<any, any> {
         return (
             <React.Fragment>
                 <div className='row'>
-                    <h3 className='mr-5 ml-3'> List Items </h3>
+                    <h3 className='mr-5 ml-3'>Items </h3>
                     <div className='align-items-center flex-row justify-content-center row'>
                         <button 
                             className='btn btn-outline-info btn-sm rounded-pill' 
@@ -59,13 +59,23 @@ class ListItems extends React.PureComponent<any, any> {
                                 <Card 
                                     onClick={(e) => this.clickItem(e, item)}
                                 >
-                                    <CardBody>
-                                        <CardTitle tag="h5">
-                                            { item.name }
-                                        </CardTitle>
-                                        <CardText>
-                                            { item.description }
-                                        </CardText>
+                                    <CardBody className="rounded">
+                                        <div className="row">
+                                            <div className="align-content-center image-container justify-content-center row">
+                                                <div className="image rounded">
+                                                    {this.renderImage(item)}
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <CardTitle tag="h5">
+                                                    { item.name }
+                                                </CardTitle>
+                                                <CardText>
+                                                    { item.description }
+                                                </CardText>
+
+                                            </div>
+                                        </div>
                                     </CardBody>
                                 </Card>
                             </div>
@@ -78,12 +88,20 @@ class ListItems extends React.PureComponent<any, any> {
         );
     }
 
+    private renderImage(item: any){
+        if(item.image) 
+            return (
+                <img src={`data:image/jpeg;base64,${item.image}`}></img>
+            )
+    }
+
     private addItem(){
         this.setState({
             ...this.state,
             editItem: {
                 name: '',
                 description: '',
+                image: '',
                 listId: this.props.list.id
             },
         }, () => {

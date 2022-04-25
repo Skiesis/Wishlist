@@ -6,14 +6,15 @@ import { AppThunkAction } from '.';
 
 export interface ListItemState {
     isLoading: boolean;
-    listId?: number;
+    listId?: string;
     listItems: ListItem[];
 }
 
 export interface ListItem {
-    id: number;
-    listId: number;
+    id: string;
+    listId: string;
     name: string;
+    image: File;
     description: string;
 }
 
@@ -23,12 +24,12 @@ export interface ListItem {
 
 interface RequestListItemsAction {
     type: 'REQUEST_LIST_ITEMS';
-    listId: number;
+    listId: string;
 }
 
 interface ReceiveListItemsAction {
     type: 'RECEIVE_LIST_ITEMS';
-    listId: number;
+    listId: string;
     listItems: ListItem[];
 }
 
@@ -54,7 +55,7 @@ interface ResponseUpdateListItemAction {
 
 interface RequestDeleteListItemAction {
     type: 'REQUEST_DELETE_LIST_ITEM';
-    id: number;
+    id: string;
 }
 
 interface ResponseDeleteListItemAction {
@@ -72,7 +73,7 @@ type KnownAction = RequestListItemsAction | ReceiveListItemsAction | RequestInse
 // They don't directly mutate state, but they can have external side-effects (such as loading data).
 
 export const actionCreators = {
-    requestListItems: (id: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    requestListItems: (id: string): AppThunkAction<KnownAction> => (dispatch, getState) => {
         // Only load data if it's something we don't already have (and are not already loading)
         const appState = getState();
         if (appState && appState.listItems && id !== appState.listItems.listId) {
@@ -88,10 +89,15 @@ export const actionCreators = {
     },
 
     insertListItem: (item: ListItem): AppThunkAction<KnownAction> => (dispatch, getState) => {
+        let formData = new FormData(); 
+        formData.append('description', item.description);
+        formData.append('listId', item.listId);
+        formData.append('name', item.name);
+        if(item.image) formData.append('image', item.image, item.image.name);
+
         const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(item)
+            body: formData
         };
 
         fetch(`list/${item.listId}/item`, requestOptions)
@@ -104,10 +110,16 @@ export const actionCreators = {
     },
 
     updateListItem: (item: ListItem): AppThunkAction<KnownAction> => (dispatch, getState) => {
+        let formData = new FormData(); 
+        formData.append('description', item.description);
+        formData.append('listId', item.listId);
+        formData.append('name', item.name);
+        formData.append('id', item.id);
+        if(item.image) item.image.name ? formData.append('image', item.image, item.image.name) : formData.append('image', item.image);
+
         const requestOptions = {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(item)
+            body: formData
         };
 
         fetch(`list/${item.listId}/item`, requestOptions)

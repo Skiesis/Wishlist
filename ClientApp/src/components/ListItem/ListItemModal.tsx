@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ApplicationState } from '../../store';
 import * as ListItemStore from '../../store/ListItem';
-import { Button, Input, InputGroup, InputGroupText, Label, ListGroup, ListGroupItem, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
+import { Button, Input, InputGroup, InputGroupText, Label, ListGroup, ListGroupItem, Media, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 
 class ListItemModal extends React.PureComponent<any, any> {
     
@@ -13,6 +13,7 @@ class ListItemModal extends React.PureComponent<any, any> {
             item: {
                 name: '',
                 description: '',
+                image: '',
                 listId: ''
             }
         }
@@ -55,6 +56,7 @@ class ListItemModal extends React.PureComponent<any, any> {
     public render() {
         return (
             <Modal 
+                centered
                 isOpen={this.state.modal} 
                 toggle={() => this.toggle()}
             >
@@ -64,6 +66,21 @@ class ListItemModal extends React.PureComponent<any, any> {
                     { this.state.item.id ? 'Edit' : 'Add' } List Item
                 </ModalHeader>
                 <ModalBody>
+                    <div className="row align-content-center mb-4">
+                        <div className="align-content-center image-container justify-content-center row">
+                            <div className="image rounded">
+                                {this.renderImage()}
+                            </div>
+                        </div>
+                        <div className="row align-content-center ml-1">
+                            <Input
+                                type="file"
+                                name="image"
+                                accept="image/*"
+                                onChange={(e) => this.handleChange(e)}
+                            />
+                        </div>
+                    </div>
                     <InputGroup>
                         <InputGroupText>
                             Name
@@ -71,7 +88,7 @@ class ListItemModal extends React.PureComponent<any, any> {
                         <Input 
                             placeholder='Name' 
                             name="name" 
-                            value={this.state.item.name} 
+                            value={this.state.item.name || ''} 
                             onChange={(e) => this.handleChange(e)} 
                         />
                     </InputGroup>
@@ -102,15 +119,21 @@ class ListItemModal extends React.PureComponent<any, any> {
         );
     }
 
+    private renderImage(){
+        if(this.state.item.image) {
+            let src = this.state.item.image.name ? URL.createObjectURL(this.state.item.image) : `data:image/jpeg;base64,${this.state.item.image}`
+            return (
+                <img src={src}></img>
+            )
+        }
+    }
+
     private renderEraseButton(){
         if(this.props.item.id) 
             return (
-                <div>
-                    <Button 
-                        color="danger" 
-                        onClick={() => this.eraseList()}
-                    >
-                        Erase
+                <div className="delete-button">
+                    <Button color="danger" onClick={() => this.eraseList()}>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
                     </Button>
                 </div>
             )
@@ -128,7 +151,7 @@ class ListItemModal extends React.PureComponent<any, any> {
             ...this.state,
             item: {
                 ...this.state.item, 
-                [event.target.name]: event.target.value
+                [event.target.name]: event.target.name == 'image' ? event.target.files[0] : event.target.value
             }
         })
     }
@@ -142,7 +165,7 @@ class ListItemModal extends React.PureComponent<any, any> {
 
     }
 
-    private saveList() {
+    private saveList() {     
         this.props.item.id ? this.props.updateListItem(this.state.item) : this.props.insertListItem(this.state.item);
         this.toggle();
     }

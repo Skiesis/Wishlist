@@ -14,6 +14,7 @@ class ListItemModal extends React.PureComponent<any, any> {
                 name: '',
                 description: '',
                 image: null,
+                imageSrc: '',
                 listId: ''
             }
         }
@@ -65,16 +66,14 @@ class ListItemModal extends React.PureComponent<any, any> {
                     { this.state.item.id ? 'Edit' : 'Add' } List Item
                 </ModalHeader>
                 <ModalBody>
-                    <Media object data-src={this.state.item.image} />
+                    <Media object data-src={this.state.item.imageSrc} />
                     <InputGroup>
                         <InputGroupText>
                             Image
                         </InputGroupText>
                         <Input
                             type="file"
-                            name="image"
-                            value={this.state.item.image}
-                            onChange={(e) => this.handleChange(e)}
+                            onChange={(e) => this.showPreview(e)}
                         />
                     </InputGroup>
                     <InputGroup>
@@ -144,6 +143,25 @@ class ListItemModal extends React.PureComponent<any, any> {
                 [event.target.name]: event.target.value
             }
         })
+    }
+
+    private showPreview(event: any) {
+        if (!event.target.files || !event.target.files[0]) return;
+
+        let file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = x => {
+            this.setState({
+                ...this.state,
+                item: {
+                    ...this.state.item,
+                    image: file,
+                    imageSrc: x.target ? x.target.result : ''
+                }
+            });
+        }
+
+        reader.readAsDataURL(file);
     }
 
     private toggle() {

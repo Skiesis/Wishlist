@@ -61,8 +61,15 @@ namespace WishlistV1._1.Controllers
         }
 
         [HttpPost("{listId}/item")]
-        public IActionResult InsertItem([FromBody] ListItem item, [FromRoute] string listId)
+        public IActionResult InsertItem([FromRoute] string listId)
         {
+            //[FromBody] ListItem item, 
+            ListItem item = new ListItem();
+            item.name = Request.Form["name"];
+            item.description = Request.Form["description"];
+            item.image = Request.Form.Files[0];
+            item.imageSrc = Request.Form["imageSrc"];
+            item.listId = listId;
             _listService.CreateItem(item);
             return Ok(_listService.GetItems(listId));
         }

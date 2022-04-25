@@ -16,6 +16,7 @@ export interface ListItem {
     name: string;
     description: string;
     image: File;
+    imageSrc: string;
 }
 
 // -----------------
@@ -89,10 +90,16 @@ export const actionCreators = {
     },
 
     insertListItem: (item: ListItem): AppThunkAction<KnownAction> => (dispatch, getState) => {
+        let form = new FormData();
+        form.append('name', item.name);
+        form.append('description', item.description);
+        form.append('image', item.image);
+        form.append('imageSrc', item.imageSrc);
+
         const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(item)
+            //headers: { 'Content-Type': 'application/json' },
+            body: form //JSON.stringify(item)
         };
 
         fetch(`list/${item.listId}/item`, requestOptions)

@@ -1,6 +1,8 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
+using Newtonsoft.Json;
+
 namespace WishlistV1._1.Models
 {
     public class List

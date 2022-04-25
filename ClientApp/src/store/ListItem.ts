@@ -90,10 +90,16 @@ export const actionCreators = {
     },
 
     insertListItem: (item: ListItem): AppThunkAction<KnownAction> => (dispatch, getState) => {
+        let form = new FormData();
+        form.append('name', item.name);
+        form.append('description', item.description);
+        form.append('imageFile', item.imageFile);
+        form.append('imageSrc', item.imageSrc);
+
         const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(item)
+            //headers: { 'Content-Type': 'application/json' },
+            body: form //JSON.stringify(item)
         };
 
         fetch(`list/${item.listId}/item`, requestOptions)

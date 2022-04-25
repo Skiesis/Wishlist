@@ -64,16 +64,22 @@ namespace WishlistV1._1.Controllers
         }
 
         [HttpPost("{listId}/item")]
-        public async Task<IActionResult> InsertItem([FromBody] ListItem item, [FromRoute] string listId)
+        public async Task<IActionResult> InsertItem([FromRoute] string listId)
         {
-            await _listService.CreateItem(item);
+            ListItem item = new ListItem();
+            item.name = Request.Form["name"];
+            item.description = Request.Form["description"];
+            item.listId = listId;
+            IFormFile imageFile = Request.Form.Files[0];
+
+            await _listService.CreateItem(item, imageFile);
             return Ok(_listService.GetItems(listId));
         }
 
         [HttpPut("{listId}/item")]
         public async Task<IActionResult> UpdateItem([FromBody] ListItem item, [FromRoute] string listId)
         {
-            await _listService.UpdateItem(item.id, item);
+            //await _listService.UpdateItem(item.id, item);
             return Ok(_listService.GetItems(listId));
         }
 

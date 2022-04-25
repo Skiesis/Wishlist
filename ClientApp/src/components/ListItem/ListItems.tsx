@@ -59,7 +59,7 @@ class ListItems extends React.PureComponent<any, any> {
                                 <Card 
                                     onClick={(e) => this.clickItem(e, item)}
                                 >
-                                    <CardImg top src={ item.imageSrc } />
+                                    <CardImg left src={ require("" + item.imageSrc) } />
                                     <CardBody>
                                         <CardTitle tag="h5">
                                             { item.name }

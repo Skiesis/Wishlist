@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ApplicationState } from '../../store';
 import * as ListItemStore from '../../store/ListItem';
+import './ListItemModal.css';
 import { Button, Input, InputGroup, InputGroupText, Label, ListGroup, ListGroupItem, Modal, ModalBody, ModalFooter, ModalHeader, Media } from 'reactstrap';
 
 class ListItemModal extends React.PureComponent<any, any> {
@@ -66,16 +67,11 @@ class ListItemModal extends React.PureComponent<any, any> {
                     {this.state.item.id ? 'Edit' : 'Add'} List Item
                 </ModalHeader>
                 <ModalBody>
-                    <Media object data-src={this.state.item.imageSrc} />
-                    <InputGroup>
-                        <InputGroupText>
-                            Image
-                        </InputGroupText>
-                        <Input
-                            type="file"
-                            onChange={(e) => this.showPreview(e)}
-                        />
-                    </InputGroup>
+                    <img className="item-img" src={ this.state.item.imageSrc } />
+                    <Input
+                        type="file"
+                        onChange={(e) => this.showPreview(e)}
+                    />
                     <InputGroup>
                         <InputGroupText>
                             Name
@@ -156,7 +152,7 @@ class ListItemModal extends React.PureComponent<any, any> {
                 item: {
                     ...this.state.item,
                     imageFile: imageFile,
-                    imageSrc: x.target ? x.target.result : null
+                    imageSrc: x.target ? x.target.result : ''
                 }
             });
         };

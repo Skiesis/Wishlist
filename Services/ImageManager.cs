@@ -11,23 +11,22 @@ namespace WishlistV1._1.Services
     public class ImageManager
     {
         private string _imagePathFolder;
+        private IWebHostEnvironment _hostEnvironment;
 
         public ImageManager(IWebHostEnvironment hostEnvironment)
         {
+            _hostEnvironment = hostEnvironment;
             _imagePathFolder = Path.Combine(hostEnvironment.ContentRootPath, "Images");
         }
 
-        private bool ExistsImageWithoutExtension(string imageName)
+        private bool ExistsImage(string imageName)
         {
-            var files = Directory.GetFiles(Path.Combine(_imagePathFolder, imageName + ".*"));
-            return files.Length > 0;
+            return File.Exists(Path.Combine(_imagePathFolder, imageName));
         }
 
-        public void DeleteImageWithoutExtension(string imageName)
+        public void DeleteImage(string imageName)
         {
-            var files = Directory.GetFiles(Path.Combine(_imagePathFolder, imageName + ".*"));
-            foreach (var file in files)
-                File.Delete(file);
+            File.Delete(Path.Combine(_imagePathFolder, imageName));
         }
 
         private async Task<string> SaveImage(IFormFile file, string imagePath)
@@ -42,19 +41,28 @@ namespace WishlistV1._1.Services
 
         private async Task<string> UpdateImage(IFormFile file, string imageName, string imagePath)
         {
-            DeleteImageWithoutExtension(imageName);
+            DeleteImage(imageName);
             return await SaveImage(file, imagePath);
         }
 
-        public async Task<string> UploadImage(IFormFile imageFile, string itemId)
+        public async Task<string> UploadImage(IFormFile imageFile)
         {
-            string imageName = itemId + Path.GetExtension(imageFile.FileName);
-            string imagePath = Path.Combine(_imagePathFolder, imageName);
+            string imagePath = Path.Combine(_imagePathFolder, imageFile.FileName);
 
-            if (ExistsImageWithoutExtension(itemId)) await UpdateImage(imageFile, itemId, imagePath);
+            if (ExistsImage(imageFile.FileName)) await UpdateImage(imageFile, imageFile.FileName, imagePath);
             else await SaveImage(imageFile, imagePath);
 
-            return imageName;
+            return imageFile.FileName;
+        }
+
+        public string GetFileUrl(string imageName)
+        {
+            return ExistsImage(imageName) ? GenerateFileUrl(imageName) : "";
+        }
+
+        private string GenerateFileUrl(string imageName)
+        {
+            return Path.Combine(_imagePathFolder, imageName);
         }
     }
 }

@@ -39,12 +39,12 @@ class ListModal extends React.PureComponent<any, any> {
 
     public render() {
         return (
-            <Modal isOpen={this.state.modal} toggle={() => this.toggle()}>
+            <Modal centered isOpen={this.state.modal} toggle={() => this.toggle()}>
                 <ModalHeader toggle={() => this.toggle()}>
                     { this.props.list.id ? 'Edit' : 'Add' } List 
                 </ModalHeader>
                 <ModalBody>
-                    <InputGroup>
+                    <InputGroup className="py-3">
                         <InputGroupText>
                             Name
                         </InputGroupText>
@@ -64,8 +64,10 @@ class ListModal extends React.PureComponent<any, any> {
     private renderEraseButton(){
         if(this.props.list.id) 
             return (
-                <div>
-                    <Button color="danger" onClick={() => this.eraseList()}>Erase</Button>
+                <div className="delete-button">
+                    <Button color="danger" onClick={() => this.eraseList()}>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                    </Button>
                 </div>
             )
     }

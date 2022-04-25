@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using System.Text;
 using WishlistV1._1.Services;
+using System.IO;
 
 namespace WishlistV1._1.Controllers
 {
@@ -61,15 +62,37 @@ namespace WishlistV1._1.Controllers
         }
 
         [HttpPost("{listId}/item")]
-        public IActionResult InsertItem([FromBody] ListItem item, [FromRoute] string listId)
+        public async Task<IActionResult> InsertItem([FromForm] ListItem item, [FromForm] IFormFile image,[FromRoute] string listId)
         {
+            if (image is not null)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    image.CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+
+                    item.image = fileBytes;
+                }
+            }
+
             _listService.CreateItem(item);
             return Ok(_listService.GetItems(listId));
         }
 
         [HttpPut("{listId}/item")]
-        public IActionResult UpdateItem([FromBody] ListItem item, [FromRoute] string listId)
+        public IActionResult UpdateItem([FromForm] ListItem item, [FromForm] IFormFile? image, [FromRoute] string listId)
         {
+            if (image is not null)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    image.CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+
+                    item.image = fileBytes;
+                }
+            }
+
             _listService.UpdateItem(item.id, item);
             return Ok(_listService.GetItems(listId));
         }

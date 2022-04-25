@@ -63,7 +63,7 @@ class ListItems extends React.PureComponent<any, any> {
                                         <div className="row">
                                             <div className="align-content-center image-container justify-content-center row">
                                                 <div className="image rounded">
-
+                                                    {this.renderImage(item)}
                                                 </div>
                                             </div>
                                             <div>
@@ -88,12 +88,20 @@ class ListItems extends React.PureComponent<any, any> {
         );
     }
 
+    private renderImage(item: any){
+        if(item.image) 
+            return (
+                <img src={`data:image/jpeg;base64,${item.image}`}></img>
+            )
+    }
+
     private addItem(){
         this.setState({
             ...this.state,
             editItem: {
                 name: '',
                 description: '',
+                image: '',
                 listId: this.props.list.id
             },
         }, () => {

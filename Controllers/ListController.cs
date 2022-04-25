@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using System.Text;
 using WishlistV1._1.Services;
+using Microsoft.AspNetCore.Hosting;
 
 namespace WishlistV1._1.Controllers
 {
@@ -20,11 +21,13 @@ namespace WishlistV1._1.Controllers
 
         private readonly ILogger<ListController> _logger;
         private readonly ListService _listService;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public ListController(ILogger<ListController> logger, ListService listService)
+        public ListController(ILogger<ListController> logger, ListService listService, IWebHostEnvironment hostEnvironment)
         {
             _logger = logger;
             _listService = listService;
+            _hostEnvironment = hostEnvironment;
         }
 
         [HttpGet]
@@ -61,16 +64,16 @@ namespace WishlistV1._1.Controllers
         }
 
         [HttpPost("{listId}/item")]
-        public IActionResult InsertItem([FromBody] ListItem item, [FromRoute] string listId)
+        public async Task<IActionResult> InsertItem([FromBody] ListItem item, [FromRoute] string listId)
         {
-            _listService.CreateItem(item);
+            await _listService.CreateItem(item);
             return Ok(_listService.GetItems(listId));
         }
 
         [HttpPut("{listId}/item")]
-        public IActionResult UpdateItem([FromBody] ListItem item, [FromRoute] string listId)
+        public async Task<IActionResult> UpdateItem([FromBody] ListItem item, [FromRoute] string listId)
         {
-            _listService.UpdateItem(item.id, item);
+            await _listService.UpdateItem(item.id, item);
             return Ok(_listService.GetItems(listId));
         }
 
@@ -80,6 +83,5 @@ namespace WishlistV1._1.Controllers
             _listService.RemoveItem(id);
             return Ok(_listService.GetItems(listId));
         }
-
     }
 }

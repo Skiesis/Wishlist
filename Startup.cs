@@ -34,6 +34,8 @@ namespace WishlistV1._1
 
             services.AddSingleton<IDatabaseSettings>(sp => sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
 
+            services.AddSingleton<ImageManager>();
+
             services.AddSingleton<ListService>();
 
             // In production, the React files will be served from this directory

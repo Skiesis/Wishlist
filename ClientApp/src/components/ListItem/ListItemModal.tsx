@@ -5,7 +5,7 @@ import * as ListItemStore from '../../store/ListItem';
 import { Button, Input, InputGroup, InputGroupText, Label, ListGroup, ListGroupItem, Modal, ModalBody, ModalFooter, ModalHeader, Media } from 'reactstrap';
 
 class ListItemModal extends React.PureComponent<any, any> {
-    
+
     constructor(props: any) {
         super(props);
         this.state = {
@@ -13,27 +13,28 @@ class ListItemModal extends React.PureComponent<any, any> {
             item: {
                 name: '',
                 description: '',
-                image: null,
+                imageFile: '',
+                imageSrc: '',
                 listId: ''
             }
         }
     }
-    
-    public componentDidMount() {       
+
+    public componentDidMount() {
         this.setState({
             modal: this.props.modal,
-            item: this.props.item 
+            item: this.props.item
         })
     }
 
     public componentDidUpdate() {
-        if(this.props.modal && this.props.modal !== this.state.modal) this.setState({
+        if (this.props.modal && this.props.modal !== this.state.modal) this.setState({
             ...this.state,
             modal: this.props.modal,
         })
 
-        if(this.props.item.listId && this.props.item.listId !== this.state.item.listId) {
-            
+        if (this.props.item.listId && this.props.item.listId !== this.state.item.listId) {
+
             this.setState({
                 ...this.state,
                 item: {
@@ -43,8 +44,8 @@ class ListItemModal extends React.PureComponent<any, any> {
             })
         }
 
-        if(this.props.item && this.props.item.id !== this.state.item.id) {
-            
+        if (this.props.item && this.props.item.id !== this.state.item.id) {
+
             this.setState({
                 ...this.state,
                 item: this.props.item
@@ -55,37 +56,37 @@ class ListItemModal extends React.PureComponent<any, any> {
 
     public render() {
         return (
-            <Modal 
-                isOpen={this.state.modal} 
+            <Modal
+                isOpen={this.state.modal}
                 toggle={() => this.toggle()}
             >
-                <ModalHeader 
+                <ModalHeader
                     toggle={() => this.toggle()}
                 >
-                    { this.state.item.id ? 'Edit' : 'Add' } List Item
+                    {this.state.item.id ? 'Edit' : 'Add'} List Item
                 </ModalHeader>
                 <ModalBody>
-                    <Media object data-src={this.state.item.image} />
+                    <Media object data-src={this.state.item.imageSrc} />
                     <InputGroup>
                         <InputGroupText>
                             Image
                         </InputGroupText>
                         <Input
                             type="file"
-                            name="image"
-                            value={this.state.item.image}
-                            onChange={(e) => this.handleChange(e)}
+                            name="imageFile"
+                            value={this.state.item.imageFile}
+                            onChange={(e) => this.showPreview(e)}
                         />
                     </InputGroup>
                     <InputGroup>
                         <InputGroupText>
                             Name
                         </InputGroupText>
-                        <Input 
-                            placeholder='Name' 
-                            name="name" 
-                            value={this.state.item.name} 
-                            onChange={(e) => this.handleChange(e)} 
+                        <Input
+                            placeholder='Name'
+                            name="name"
+                            value={this.state.item.name}
+                            onChange={(e) => this.handleChange(e)}
                         />
                     </InputGroup>
                     <div className='mt-4'>
@@ -95,17 +96,17 @@ class ListItemModal extends React.PureComponent<any, any> {
                         <Input
                             id="description"
                             name="description"
-                            value={this.state.item.description} 
+                            value={this.state.item.description}
                             type="textarea"
-                            onChange={(e) => this.handleChange(e)} 
+                            onChange={(e) => this.handleChange(e)}
                         />
                     </div>
                 </ModalBody>
                 <ModalFooter>
                     {this.renderEraseButton()}
-                    <Button 
-                        color='primary' 
-                        disabled={ !this.state.item.name || !this.state.item.description || !this.state.item.image || this.props.isLoading } 
+                    <Button
+                        color='primary'
+                        disabled={!this.state.item.name || !this.state.item.description || !this.state.item.imageFile || !this.state.item.imageSrc || this.props.isLoading}
                         onClick={() => this.saveList()}
                     >
                         Save
@@ -115,12 +116,12 @@ class ListItemModal extends React.PureComponent<any, any> {
         );
     }
 
-    private renderEraseButton(){
-        if(this.props.item.id) 
+    private renderEraseButton() {
+        if (this.props.item.id)
             return (
                 <div>
-                    <Button 
-                        color="danger" 
+                    <Button
+                        color="danger"
                         onClick={() => this.eraseList()}
                     >
                         Erase
@@ -129,21 +130,40 @@ class ListItemModal extends React.PureComponent<any, any> {
             )
     }
 
-    private eraseList(){
-        if(confirm(`Are your sure you want to delete Item '${this.state.item.name}'?`)){
+    private eraseList() {
+        if (confirm(`Are your sure you want to delete Item '${this.state.item.name}'?`)) {
             this.props.deleteListItem(this.state.item);
             this.toggle();
         }
     }
 
-    private handleChange(event: any){        
+    private handleChange(event: any) {
         this.setState({
             ...this.state,
             item: {
-                ...this.state.item, 
+                ...this.state.item,
                 [event.target.name]: event.target.value
             }
         })
+    }
+
+    private showPreview(event: any) {
+        if (!event.target.files || !event.target.files[0]) return;
+
+        let imageFile = event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = x => {
+            this.setState({
+                ...this.state,
+                item: {
+                    ...this.state.item,
+                    imageFile: imageFile,
+                    imageSrc: x.target ? x.target.result : null
+                }
+            });
+        };
+
+        reader.readAsDataURL(imageFile);
     }
 
     private toggle() {

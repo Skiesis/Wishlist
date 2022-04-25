@@ -15,7 +15,8 @@ export interface ListItem {
     listId: number;
     name: string;
     description: string;
-    image: File;
+    imageSrc: string;
+    imageFile: File;
 }
 
 // -----------------

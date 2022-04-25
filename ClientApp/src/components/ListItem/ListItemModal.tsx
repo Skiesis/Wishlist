@@ -13,7 +13,7 @@ class ListItemModal extends React.PureComponent<any, any> {
             item: {
                 name: '',
                 description: '',
-                imageFile: '',
+                imageFile: null,
                 imageSrc: '',
                 listId: ''
             }
@@ -73,8 +73,6 @@ class ListItemModal extends React.PureComponent<any, any> {
                         </InputGroupText>
                         <Input
                             type="file"
-                            name="imageFile"
-                            value={this.state.item.imageFile}
                             onChange={(e) => this.showPreview(e)}
                         />
                     </InputGroup>

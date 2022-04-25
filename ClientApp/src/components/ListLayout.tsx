@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Container } from 'reactstrap';
-import NavMenu from './NavMenu';
 import List from './List/List'; 
 import ListItems from './ListItem/ListItems';
 
